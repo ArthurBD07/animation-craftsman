@@ -28,6 +28,19 @@ const Section1: React.FC<SectionProps> = ({ scrollYProgress }) => {
       />
       <div className="absolute inset-0 gradient-hero opacity-80" />
 
+      {/* Animated waves at bottom */}
+      <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-[0] z-[5]">
+        <svg className="relative block w-[200%] h-[120px] md:h-[180px] animate-wave" viewBox="0 0 1440 120" preserveAspectRatio="none">
+          <path d="M0,60 C240,120 480,0 720,60 C960,120 1200,0 1440,60 L1440,120 L0,120 Z" fill="hsl(260 40% 98% / 0.3)" />
+        </svg>
+        <svg className="absolute bottom-0 left-0 block w-[200%] h-[100px] md:h-[150px] animate-wave-slow" viewBox="0 0 1440 120" preserveAspectRatio="none">
+          <path d="M0,80 C360,20 720,100 1080,40 C1260,10 1380,60 1440,80 L1440,120 L0,120 Z" fill="hsl(260 40% 98% / 0.2)" />
+        </svg>
+        <svg className="absolute bottom-0 left-0 block w-[200%] h-[80px] md:h-[120px] animate-wave-fast" viewBox="0 0 1440 120" preserveAspectRatio="none">
+          <path d="M0,40 C180,100 360,20 540,60 C720,100 900,20 1080,60 C1260,100 1380,40 1440,40 L1440,120 L0,120 Z" fill="hsl(260 40% 98% / 0.15)" />
+        </svg>
+      </div>
+
       <div className="relative z-10 text-center px-4 max-w-5xl mx-auto">
         <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold font-heading text-primary-foreground mb-6 leading-tight">
           Empresa Júnior
