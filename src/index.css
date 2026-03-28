@@ -82,6 +82,10 @@
     @apply border-border;
   }
 
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
     @apply bg-background text-foreground;
     font-family: var(--font-body);
@@ -115,4 +119,26 @@
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
+}
+
+@keyframes wave {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes wave-reverse {
+  0% { transform: translateX(-50%); }
+  100% { transform: translateX(0); }
+}
+
+.animate-wave {
+  animation: wave 12s linear infinite;
+}
+
+.animate-wave-slow {
+  animation: wave-reverse 16s linear infinite;
+}
+
+.animate-wave-fast {
+  animation: wave 8s linear infinite;
 }
