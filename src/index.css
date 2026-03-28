@@ -121,24 +121,3 @@
   }
 }
 
-@keyframes wave {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
-
-@keyframes wave-reverse {
-  0% { transform: translateX(-50%); }
-  100% { transform: translateX(0); }
-}
-
-.animate-wave {
-  animation: wave 12s linear infinite;
-}
-
-.animate-wave-slow {
-  animation: wave-reverse 16s linear infinite;
-}
-
-.animate-wave-fast {
-  animation: wave 8s linear infinite;
-}
