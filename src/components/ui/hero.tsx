@@ -33,10 +33,7 @@ export default function ShaderHero() {
       {/* Shader Background */}
       <div className="absolute inset-0">
         <MeshGradient
-          color1="#210E46"
-          color2="#BD3541"
-          color3="#3a1a6e"
-          color4="#1a0a2e"
+          colors={["#210E46", "#BD3541", "#3a1a6e", "#1a0a2e"]}
           speed={0.15}
           style={{ width: "100%", height: "100%" }}
         />
