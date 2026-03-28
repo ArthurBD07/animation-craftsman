@@ -1,5 +1,5 @@
 import Navbar from '@/components/Navbar';
-import HeroScrollAnimation from '@/components/ui/hero-scroll-animation';
+import ShaderHero from '@/components/ui/hero';
 import ServicesSection from '@/components/ServicesSection';
 import AboutSection from '@/components/AboutSection';
 import ProjectsSection from '@/components/ProjectsSection';
@@ -10,7 +10,7 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <HeroScrollAnimation />
+      <ShaderHero />
       <AboutSection />
       <ServicesSection />
       <ProjectsSection />
