@@ -107,8 +107,7 @@ export default function ShaderHero() {
         >
           <div className="relative w-16 h-16">
             <PulsingBorder
-              color1="#BD3541"
-              color2="#210E46"
+              colors={["#BD3541", "#210E46"]}
               style={{
                 width: "100%",
                 height: "100%",
