@@ -2,8 +2,8 @@
 
 import { useScroll, useTransform, motion, type MotionValue } from 'motion/react';
 import React, { useRef, forwardRef } from 'react';
-import { MeshGradient } from '@paper-design/shaders-react';
 import heroCampus from '@/assets/hero-campus.jpg';
+import heroAbstract from '@/assets/hero-abstract.jpg';
 import projectWeb from '@/assets/project-web.jpg';
 import projectConsulting from '@/assets/project-consulting.jpg';
 
@@ -19,43 +19,33 @@ const Section1: React.FC<SectionProps> = ({ scrollYProgress }) => {
       style={{ scale, rotate }}
       className="sticky top-0 h-screen flex flex-col items-center justify-center overflow-hidden"
     >
-      {/* Shader background */}
-      <div className="absolute inset-0">
-        <MeshGradient
-          colors={["#210E46", "#BD3541", "#3a1a6e", "#1a0a2e"]}
-          speed={0.15}
-          style={{ width: "100%", height: "100%" }}
-        />
-      </div>
-      <div className="absolute inset-0 bg-primary/30" />
+      <img
+        src={heroAbstract}
+        alt="Background"
+        className="absolute inset-0 w-full h-full object-cover"
+        width={1920}
+        height={1080}
+      />
+      <div className="absolute inset-0 gradient-hero opacity-80" />
 
       <div className="relative z-10 text-center px-4 max-w-5xl mx-auto">
-        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary-foreground/20 bg-primary-foreground/5 backdrop-blur-sm mb-8">
-          <span className="text-accent text-lg">✨</span>
-          <span className="text-primary-foreground/80 text-sm font-medium">
-            Empresa Júnior PUC Minas Barreiro
-          </span>
-        </div>
-
         <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold font-heading text-primary-foreground mb-6 leading-tight">
-          Transformamos
+          Empresa Júnior
           <br />
-          <span className="text-accent">ideias</span> em
-          <br />
-          soluções reais
+          <span className="text-accent">PUC Minas Barreiro</span>
         </h1>
-        <p className="text-lg md:text-xl text-primary-foreground/70 mb-10 max-w-2xl mx-auto font-body leading-relaxed">
-          Soluções de qualidade com preços acessíveis, unindo aprendizado acadêmico à prática profissional.
+        <p className="text-xl md:text-2xl text-primary-foreground/80 mb-10 max-w-2xl mx-auto font-body">
+          Transformamos ideias em soluções reais para o seu negócio
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <a href="#contato" className="gradient-cta px-8 py-4 rounded-xl text-accent-foreground font-semibold text-lg hover:opacity-90 transition-opacity">
+          <a href="#contato" className="gradient-cta px-8 py-4 rounded-lg text-accent-foreground font-semibold text-lg hover:opacity-90 transition-opacity">
             Solicitar Projeto
           </a>
-          <a href="#servicos" className="border-2 border-primary-foreground/20 px-8 py-4 rounded-xl text-primary-foreground font-semibold text-lg hover:bg-primary-foreground/10 transition-colors backdrop-blur-sm">
+          <a href="#servicos" className="border-2 border-primary-foreground/30 px-8 py-4 rounded-lg text-primary-foreground font-semibold text-lg hover:bg-primary-foreground/10 transition-colors">
             Nossos Serviços
           </a>
         </div>
-        <p className="text-primary-foreground/40 mt-12 text-sm animate-bounce">Role para baixo 👇</p>
+        <p className="text-primary-foreground/50 mt-12 text-sm animate-bounce">Role para baixo 👇</p>
       </div>
     </motion.div>
   );
