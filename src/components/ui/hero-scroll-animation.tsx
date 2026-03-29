@@ -3,7 +3,6 @@
 import { useScroll, useTransform, motion, type MotionValue } from 'motion/react';
 import React, { useRef, forwardRef } from 'react';
 import heroCampus from '@/assets/hero-campus.jpg';
-import heroAbstract from '@/assets/hero-abstract.jpg';
 import { InfiniteGrid } from '@/components/ui/the-infinite-grid';
 import projectWeb from '@/assets/project-web.jpg';
 import projectConsulting from '@/assets/project-consulting.jpg';
@@ -20,14 +19,6 @@ const Section1: React.FC<SectionProps> = ({ scrollYProgress }) => {
       style={{ scale, rotate }}
       className="sticky top-0 h-screen flex flex-col items-center justify-center overflow-hidden"
     >
-      <img
-        src={heroAbstract}
-        alt="Background"
-        className="absolute inset-0 w-full h-full object-cover"
-        width={1920}
-        height={1080}
-      />
-      <div className="absolute inset-0 gradient-hero opacity-50" />
       <InfiniteGrid className="z-[1]" />
 
       <div className="relative z-10 text-center px-4 max-w-5xl mx-auto pointer-events-auto">
