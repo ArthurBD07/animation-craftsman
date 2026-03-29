@@ -27,7 +27,7 @@ const Section1: React.FC<SectionProps> = ({ scrollYProgress }) => {
         width={1920}
         height={1080}
       />
-      <div className="absolute inset-0 gradient-hero opacity-80" />
+      <div className="absolute inset-0 gradient-hero opacity-50" />
       <InfiniteGrid className="z-[1]" />
 
       <div className="relative z-10 text-center px-4 max-w-5xl mx-auto pointer-events-auto">
