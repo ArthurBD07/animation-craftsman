@@ -49,7 +49,7 @@ export const InfiniteGrid: React.FC<InfiniteGridProps> = ({ className, children 
     >
       {/* Base grid layer */}
       <div className="absolute inset-0">
-        <GridPattern offsetX={gridOffsetX} offsetY={gridOffsetY} strokeColor="hsl(261 67% 30% / 0.15)" />
+        <GridPattern offsetX={gridOffsetX} offsetY={gridOffsetY} strokeColor="hsl(261 67% 30% / 0.35)" />
       </div>
 
       {/* Mouse-reactive grid layer */}
@@ -57,7 +57,7 @@ export const InfiniteGrid: React.FC<InfiniteGridProps> = ({ className, children 
         className="absolute inset-0"
         style={{ maskImage, WebkitMaskImage: maskImage }}
       >
-        <GridPattern offsetX={gridOffsetX} offsetY={gridOffsetY} strokeColor="hsl(355 55% 47% / 0.5)" />
+        <GridPattern offsetX={gridOffsetX} offsetY={gridOffsetY} strokeColor="hsl(355 55% 47% / 0.7)" />
       </motion.div>
 
       {/* Gradient overlays */}
