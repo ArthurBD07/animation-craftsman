@@ -1,64 +1,140 @@
-import React, { useState, useRef } from "react";
+import React, { useRef, useEffect } from "react";
 import { cn } from "@/lib/utils";
-import {
-  motion,
-  useMotionValue,
-  useTransform,
-  useMotionTemplate,
-  useAnimationFrame,
-  type MotionValue,
-} from "motion/react";
 
 interface InfiniteGridProps {
   className?: string;
   children?: React.ReactNode;
 }
 
+interface WaveConfig {
+  offset: number;
+  amplitude: number;
+  frequency: number;
+  color: string;
+  opacity: number;
+}
+
 export const InfiniteGrid: React.FC<InfiniteGridProps> = ({ className, children }) => {
-  const containerRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const mouseRef = useRef({ x: 0, y: 0 });
+  const targetMouseRef = useRef({ x: 0, y: 0 });
 
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
 
-  const handleMouseMove = (e: React.MouseEvent) => {
-    const { left, top } = e.currentTarget.getBoundingClientRect();
-    mouseX.set(e.clientX - left);
-    mouseY.set(e.clientY - top);
-  };
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
 
-  const gridOffsetX = useMotionValue(0);
-  const gridOffsetY = useMotionValue(0);
+    let animationId: number;
+    let time = 0;
 
-  const speedX = 0.5;
-  const speedY = 0.5;
+    const wavePalette: WaveConfig[] = [
+      { offset: 0, amplitude: 70, frequency: 0.003, color: "hsla(261, 67%, 30%, 0.8)", opacity: 0.45 },
+      { offset: Math.PI / 2, amplitude: 90, frequency: 0.0026, color: "hsla(355, 55%, 47%, 0.7)", opacity: 0.35 },
+      { offset: Math.PI, amplitude: 60, frequency: 0.0034, color: "hsla(261, 50%, 25%, 0.65)", opacity: 0.3 },
+      { offset: Math.PI * 1.5, amplitude: 80, frequency: 0.0022, color: "hsla(355, 65%, 55%, 0.5)", opacity: 0.25 },
+      { offset: Math.PI * 2, amplitude: 55, frequency: 0.004, color: "hsla(261, 67%, 16%, 0.4)", opacity: 0.2 },
+    ];
 
-  useAnimationFrame(() => {
-    const currentX = gridOffsetX.get();
-    const currentY = gridOffsetY.get();
-    gridOffsetX.set((currentX + speedX) % 40);
-    gridOffsetY.set((currentY + speedY) % 40);
-  });
+    const mouseInfluence = 70;
+    const influenceRadius = 320;
+    const smoothing = 0.1;
 
-  const maskImage = useMotionTemplate`radial-gradient(300px circle at ${mouseX}px ${mouseY}px, black, transparent)`;
+    const resizeCanvas = () => {
+      canvas.width = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+    };
+
+    const recenterMouse = () => {
+      const center = { x: canvas.width / 2, y: canvas.height / 2 };
+      mouseRef.current = center;
+      targetMouseRef.current = center;
+    };
+
+    const handleResize = () => {
+      resizeCanvas();
+      recenterMouse();
+    };
+
+    const handleMouseMove = (event: MouseEvent) => {
+      const rect = canvas.getBoundingClientRect();
+      targetMouseRef.current = {
+        x: event.clientX - rect.left,
+        y: event.clientY - rect.top,
+      };
+    };
+
+    const handleMouseLeave = () => recenterMouse();
+
+    resizeCanvas();
+    recenterMouse();
+
+    window.addEventListener("resize", handleResize);
+    canvas.addEventListener("mousemove", handleMouseMove);
+    canvas.addEventListener("mouseleave", handleMouseLeave);
+
+    const drawWave = (wave: WaveConfig) => {
+      ctx.save();
+      ctx.beginPath();
+
+      for (let x = 0; x <= canvas.width; x += 4) {
+        const dx = x - mouseRef.current.x;
+        const dy = canvas.height / 2 - mouseRef.current.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        const influence = Math.max(0, 1 - distance / influenceRadius);
+        const mouseEffect =
+          influence * mouseInfluence * Math.sin(time * 0.001 + x * 0.01 + wave.offset);
+
+        const y =
+          canvas.height / 2 +
+          Math.sin(x * wave.frequency + time * 0.002 + wave.offset) * wave.amplitude +
+          Math.sin(x * wave.frequency * 0.4 + time * 0.003) * (wave.amplitude * 0.45) +
+          mouseEffect;
+
+        if (x === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+
+      ctx.lineWidth = 2.5;
+      ctx.strokeStyle = wave.color;
+      ctx.globalAlpha = wave.opacity;
+      ctx.shadowBlur = 35;
+      ctx.shadowColor = wave.color;
+      ctx.stroke();
+      ctx.restore();
+    };
+
+    const animate = () => {
+      time += 1;
+
+      mouseRef.current.x += (targetMouseRef.current.x - mouseRef.current.x) * smoothing;
+      mouseRef.current.y += (targetMouseRef.current.y - mouseRef.current.y) * smoothing;
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      wavePalette.forEach(drawWave);
+
+      animationId = window.requestAnimationFrame(animate);
+    };
+
+    animationId = window.requestAnimationFrame(animate);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      canvas.removeEventListener("mousemove", handleMouseMove);
+      canvas.removeEventListener("mouseleave", handleMouseLeave);
+      cancelAnimationFrame(animationId);
+    };
+  }, []);
 
   return (
-    <div
-      ref={containerRef}
-      onMouseMove={handleMouseMove}
-      className={cn("absolute inset-0 overflow-hidden", className)}
-    >
-      {/* Base grid layer */}
-      <div className="absolute inset-0">
-        <GridPattern offsetX={gridOffsetX} offsetY={gridOffsetY} strokeColor="hsl(261 67% 30% / 0.35)" />
-      </div>
-
-      {/* Mouse-reactive grid layer */}
-      <motion.div
-        className="absolute inset-0"
-        style={{ maskImage, WebkitMaskImage: maskImage }}
-      >
-        <GridPattern offsetX={gridOffsetX} offsetY={gridOffsetY} strokeColor="hsl(355 55% 47% / 0.7)" />
-      </motion.div>
+    <div className={cn("absolute inset-0 overflow-hidden", className)}>
+      <canvas
+        ref={canvasRef}
+        className="absolute inset-0 w-full h-full"
+        style={{ pointerEvents: "auto" }}
+      />
 
       {/* Gradient overlays */}
       <div className="absolute inset-0 pointer-events-none">
@@ -69,41 +145,6 @@ export const InfiniteGrid: React.FC<InfiniteGridProps> = ({ className, children 
 
       {children}
     </div>
-  );
-};
-
-const GridPattern = ({
-  offsetX,
-  offsetY,
-  strokeColor,
-}: {
-  offsetX: MotionValue<number>;
-  offsetY: MotionValue<number>;
-  strokeColor: string;
-}) => {
-  const x = useTransform(offsetX, (v) => v);
-  const y = useTransform(offsetY, (v) => v);
-
-  return (
-    <motion.svg className="absolute inset-0 w-full h-full" style={{ x, y }}>
-      <defs>
-        <pattern id={`grid-${strokeColor.replace(/[^a-z0-9]/gi, '')}`} width="40" height="40" patternUnits="userSpaceOnUse">
-          <path
-            d="M 40 0 L 0 0 0 40"
-            fill="none"
-            stroke={strokeColor}
-            strokeWidth="1"
-          />
-        </pattern>
-      </defs>
-      <rect
-        x="-40"
-        y="-40"
-        width="calc(100% + 80px)"
-        height="calc(100% + 80px)"
-        fill={`url(#grid-${strokeColor.replace(/[^a-z0-9]/gi, '')})`}
-      />
-    </motion.svg>
   );
 };
 
