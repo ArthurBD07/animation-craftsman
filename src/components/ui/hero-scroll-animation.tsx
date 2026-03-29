@@ -4,6 +4,7 @@ import { useScroll, useTransform, motion, type MotionValue } from 'motion/react'
 import React, { useRef, forwardRef } from 'react';
 import heroCampus from '@/assets/hero-campus.jpg';
 import heroAbstract from '@/assets/hero-abstract.jpg';
+import { InfiniteGrid } from '@/components/ui/the-infinite-grid';
 import projectWeb from '@/assets/project-web.jpg';
 import projectConsulting from '@/assets/project-consulting.jpg';
 
