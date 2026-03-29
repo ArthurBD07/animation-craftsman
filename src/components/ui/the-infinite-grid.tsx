@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useRef, useEffect } from "react";
 import { cn } from "@/lib/utils";
 
 interface InfiniteGridProps {
@@ -14,14 +14,6 @@ interface WaveConfig {
   opacity: number;
 }
 
-interface ThemeColors {
-  backgroundTop: string;
-  backgroundBottom: string;
-  glowPrimary: string;
-  glowAccent: string;
-  wavePalette: WaveConfig[];
-}
-
 export const InfiniteGrid: React.FC<InfiniteGridProps> = ({ className, children }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const mouseRef = useRef({ x: 0, y: 0 });
@@ -34,75 +26,20 @@ export const InfiniteGrid: React.FC<InfiniteGridProps> = ({ className, children 
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    let animationId = 0;
+    let animationId: number;
     let time = 0;
 
-    const computeThemeColors = (): ThemeColors => {
-      const rootStyles = getComputedStyle(document.documentElement);
+    const wavePalette: WaveConfig[] = [
+      { offset: 0, amplitude: 70, frequency: 0.003, color: "hsla(261, 67%, 30%, 0.8)", opacity: 0.45 },
+      { offset: Math.PI / 2, amplitude: 90, frequency: 0.0026, color: "hsla(355, 55%, 47%, 0.7)", opacity: 0.35 },
+      { offset: Math.PI, amplitude: 60, frequency: 0.0034, color: "hsla(261, 50%, 25%, 0.65)", opacity: 0.3 },
+      { offset: Math.PI * 1.5, amplitude: 80, frequency: 0.0022, color: "hsla(355, 65%, 55%, 0.5)", opacity: 0.25 },
+      { offset: Math.PI * 2, amplitude: 55, frequency: 0.004, color: "hsla(261, 67%, 16%, 0.4)", opacity: 0.2 },
+    ];
 
-      const resolveColor = (variables: string[], alpha = 1) => {
-        const tempEl = document.createElement("div");
-        tempEl.style.position = "absolute";
-        tempEl.style.visibility = "hidden";
-        tempEl.style.width = "1px";
-        tempEl.style.height = "1px";
-        document.body.appendChild(tempEl);
-
-        let color = `rgba(33, 14, 70, ${alpha})`;
-
-        for (const variable of variables) {
-          const value = rootStyles.getPropertyValue(variable).trim();
-          if (!value) continue;
-
-          tempEl.style.backgroundColor = `hsl(var(${variable}) / ${alpha})`;
-          const computedColor = getComputedStyle(tempEl).backgroundColor;
-
-          if (computedColor && computedColor !== "rgba(0, 0, 0, 0)") {
-            color = computedColor;
-            break;
-          }
-        }
-
-        document.body.removeChild(tempEl);
-        return color;
-      };
-
-      const primary = resolveColor(["--primary"], 0.82);
-      const accent = resolveColor(["--accent"], 0.72);
-      const primarySoft = resolveColor(["--primary"], 0.46);
-      const accentSoft = resolveColor(["--accent"], 0.36);
-      const foregroundSoft = resolveColor(["--primary-foreground", "--foreground"], 0.2);
-
-      return {
-        backgroundTop: resolveColor(["--primary", "--background"], 1),
-        backgroundBottom: resolveColor(["--muted", "--background"], 0.96),
-        glowPrimary: resolveColor(["--primary"], 0.32),
-        glowAccent: resolveColor(["--accent"], 0.22),
-        wavePalette: [
-          { offset: 0, amplitude: 70, frequency: 0.003, color: primary, opacity: 0.45 },
-          { offset: Math.PI / 2, amplitude: 90, frequency: 0.0026, color: accent, opacity: 0.35 },
-          { offset: Math.PI, amplitude: 60, frequency: 0.0034, color: primarySoft, opacity: 0.3 },
-          { offset: Math.PI * 1.5, amplitude: 80, frequency: 0.0022, color: accentSoft, opacity: 0.24 },
-          { offset: Math.PI * 2, amplitude: 55, frequency: 0.004, color: foregroundSoft, opacity: 0.18 },
-        ],
-      };
-    };
-
-    let themeColors = computeThemeColors();
-
-    const observer = new MutationObserver(() => {
-      themeColors = computeThemeColors();
-    });
-
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["class", "data-theme"],
-    });
-
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const mouseInfluence = prefersReducedMotion ? 10 : 70;
-    const influenceRadius = prefersReducedMotion ? 160 : 320;
-    const smoothing = prefersReducedMotion ? 0.04 : 0.1;
+    const mouseInfluence = 70;
+    const influenceRadius = 320;
+    const smoothing = 0.1;
 
     const resizeCanvas = () => {
       canvas.width = canvas.offsetWidth;
@@ -128,9 +65,14 @@ export const InfiniteGrid: React.FC<InfiniteGridProps> = ({ className, children 
       };
     };
 
-    const handleMouseLeave = () => {
-      recenterMouse();
-    };
+    const handleMouseLeave = () => recenterMouse();
+
+    resizeCanvas();
+    recenterMouse();
+
+    window.addEventListener("resize", handleResize);
+    canvas.addEventListener("mousemove", handleMouseMove);
+    canvas.addEventListener("mouseleave", handleMouseLeave);
 
     const drawWave = (wave: WaveConfig) => {
       ctx.save();
@@ -150,11 +92,8 @@ export const InfiniteGrid: React.FC<InfiniteGridProps> = ({ className, children 
           Math.sin(x * wave.frequency * 0.4 + time * 0.003) * (wave.amplitude * 0.45) +
           mouseEffect;
 
-        if (x === 0) {
-          ctx.moveTo(x, y);
-        } else {
-          ctx.lineTo(x, y);
-        }
+        if (x === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
       }
 
       ctx.lineWidth = 2.5;
@@ -166,47 +105,15 @@ export const InfiniteGrid: React.FC<InfiniteGridProps> = ({ className, children 
       ctx.restore();
     };
 
-    resizeCanvas();
-    recenterMouse();
-
-    window.addEventListener("resize", handleResize);
-    canvas.addEventListener("mousemove", handleMouseMove);
-    canvas.addEventListener("mouseleave", handleMouseLeave);
-
     const animate = () => {
       time += 1;
 
       mouseRef.current.x += (targetMouseRef.current.x - mouseRef.current.x) * smoothing;
       mouseRef.current.y += (targetMouseRef.current.y - mouseRef.current.y) * smoothing;
 
-      const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-      gradient.addColorStop(0, themeColors.backgroundTop);
-      gradient.addColorStop(1, themeColors.backgroundBottom);
-      ctx.fillStyle = gradient;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      const glowRadius = Math.max(canvas.width, canvas.height) * 0.42;
-      const glow = ctx.createRadialGradient(
-        mouseRef.current.x,
-        mouseRef.current.y,
-        0,
-        mouseRef.current.x,
-        mouseRef.current.y,
-        glowRadius,
-      );
-      glow.addColorStop(0, themeColors.glowPrimary);
-      glow.addColorStop(0.5, themeColors.glowAccent);
-      glow.addColorStop(1, "rgba(0, 0, 0, 0)");
-
-      ctx.save();
-      ctx.globalCompositeOperation = "screen";
-      ctx.fillStyle = glow;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.restore();
-
-      ctx.globalAlpha = 1;
-      ctx.shadowBlur = 0;
-      themeColors.wavePalette.forEach(drawWave);
+      wavePalette.forEach(drawWave);
 
       animationId = window.requestAnimationFrame(animate);
     };
@@ -218,13 +125,24 @@ export const InfiniteGrid: React.FC<InfiniteGridProps> = ({ className, children 
       canvas.removeEventListener("mousemove", handleMouseMove);
       canvas.removeEventListener("mouseleave", handleMouseLeave);
       cancelAnimationFrame(animationId);
-      observer.disconnect();
     };
   }, []);
 
   return (
     <div className={cn("absolute inset-0 overflow-hidden", className)}>
-      <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />
+      <canvas
+        ref={canvasRef}
+        className="absolute inset-0 w-full h-full"
+        style={{ pointerEvents: "auto" }}
+      />
+
+      {/* Gradient overlays */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-primary/80" />
+        <div className="absolute inset-0 bg-gradient-to-t from-transparent via-transparent to-primary/60" />
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/40 via-transparent to-primary/40" />
+      </div>
+
       {children}
     </div>
   );
