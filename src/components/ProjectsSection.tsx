@@ -1,12 +1,13 @@
 import projectWeb from '@/assets/project-web.jpg';
 import projectConsulting from '@/assets/project-consulting.jpg';
+import exuberante from '@/assets/exuberante.jpeg';
 
 const projects = [
   {
-    title: 'Site Institucional - Padaria Artesanal',
-    client: 'Padaria do Barreiro',
-    description: 'Desenvolvimento de site institucional com cardápio digital e sistema de pedidos online.',
-    image: projectWeb,
+    title: 'Exuberante - Lingerie e acessórios',
+    client: 'Loja de lingerie e roupas íntimas',
+    description: 'Na Exuberante, unimos conforto, elegância e sensualidade para valorizar a beleza única de cada mulher com lingeries e acessórios incríveis.',
+    image: exuberante,
   },
   {
     title: 'Consultoria de Marketing',

@@ -34,14 +34,14 @@ const Footer = () => {
               </div>
               <div className="flex items-center gap-2">
                 <Mail size={16} className="text-accent" />
-                <span>contato@ejpucbarreiro.com</span>
+                <span>integracao.jr.puc@gmail.com</span>
               </div>
             </div>
             <div className="flex gap-3 mt-4">
-              <a href="#" className="w-9 h-9 rounded-full bg-primary-foreground/10 flex items-center justify-center hover:bg-accent transition-colors">
+              <a href="https://www.instagram.com/integracaojr/" className="w-9 h-9 rounded-full bg-primary-foreground/10 flex items-center justify-center hover:bg-accent transition-colors">
                 <Instagram size={16} className="text-primary-foreground" />
               </a>
-              <a href="#" className="w-9 h-9 rounded-full bg-primary-foreground/10 flex items-center justify-center hover:bg-accent transition-colors">
+              <a href="https://www.linkedin.com/company/integracaoempresajr/" className="w-9 h-9 rounded-full bg-primary-foreground/10 flex items-center justify-center hover:bg-accent transition-colors">
                 <Linkedin size={16} className="text-primary-foreground" />
               </a>
             </div>
