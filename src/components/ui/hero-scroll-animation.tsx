@@ -7,6 +7,10 @@ import heroAbstract from '@/assets/hero-abstract.jpg';
 import { InfiniteGrid } from '@/components/ui/the-infinite-grid';
 import projectWeb from '@/assets/project-web.jpg';
 import projectConsulting from '@/assets/project-consulting.jpg';
+import exuberante from '@/assets/exuberante.jpeg';
+import lojaGataMineira from '@/assets/lojaGataMineira.jpeg';
+import geralEJ from '@/assets/geralEJ.jpeg';
+import pessoalEJ from '@/assets/pessoalEJ.png';
 
 interface SectionProps {
   scrollYProgress: MotionValue<number>;
@@ -63,7 +67,7 @@ const Section2: React.FC<SectionProps> = ({ scrollYProgress }) => {
       className="relative h-screen flex items-center justify-center overflow-hidden"
     >
       <img
-        src={heroCampus}
+        src={pessoalEJ}
         alt="Equipe"
         className="absolute inset-0 w-full h-full object-cover"
         width={1920}
@@ -82,7 +86,7 @@ const Section2: React.FC<SectionProps> = ({ scrollYProgress }) => {
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {[projectWeb, projectConsulting, projectWeb, projectConsulting].map((img, i) => (
+          {[exuberante, lojaGataMineira, exuberante, lojaGataMineira].map((img, i) => (
             <div key={i} className="rounded-xl overflow-hidden shadow-elevated hover:scale-105 transition-transform duration-300">
               <img
                 src={img}
