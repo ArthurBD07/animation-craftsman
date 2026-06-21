@@ -70,7 +70,6 @@ const Section2: React.FC<SectionProps> = ({ scrollYProgress }) => {
   const scale = useTransform(scrollYProgress, [0, 1], [0.8, 1]);
   const rotate = useTransform(scrollYProgress, [0, 1], [5, 0]);
 
-  // Array de feedbacks fictícios para você preencher com os reais da EJ
   const feedbacks: Feedback[] = [
     {
       name: "Noemia",
@@ -82,7 +81,7 @@ const Section2: React.FC<SectionProps> = ({ scrollYProgress }) => {
     {
       name: "Rafael Campos",
       role: "Diretor de E-commerce",
-      company: "instituição Privada",
+      company: "Instituição Privada",
       text: "Trabalhar com a EJ foi uma experiência incrível. Conseguiram entender a dor do nosso negócio e modelar um sistema sob medida. Recomendo fortemente a consultoria deles!",
       rating: 5,
     },
@@ -90,7 +89,7 @@ const Section2: React.FC<SectionProps> = ({ scrollYProgress }) => {
       name: "Fernanda Lima",
       role: "Fundadora",
       company: "Studio F",
-      text: "A parceria com a Integração Júnior da PUC Barreiro foi fundamental para o nosso posicionamento de mercado. Ficamos extremamente satisfeitos com o comprometimento e a maturidade técnica que os consultores demonstraram ao longo de todo o projeto. É nítido o preparo dessa nova geração de profissionais. Desejamos muito sucesso a toda a equipe!",
+      text: "A parceria com a Integração Júnior da PUC Barreiro foi fundamental para o nosso posição de mercado. Ficamos extremamente satisfeitos com o comprometimento e a maturidade técnica que os consultores demonstraram ao longo de todo o projeto. É nítido o preparo dessa nova geração de profissionais. Desejamos muito sucesso a toda a equipe!",
       rating: 5,
     },
   ];
@@ -98,7 +97,8 @@ const Section2: React.FC<SectionProps> = ({ scrollYProgress }) => {
   return (
     <motion.div
       style={{ scale, rotate }}
-      className="relative h-screen flex items-center justify-center overflow-hidden"
+      /* CORREÇÃO AQUI: Mudado de h-screen overflow-hidden para lidar dinamicamente com mobile */
+      className="relative min-h-screen md:h-screen flex items-center justify-center overflow-visible md:overflow-hidden py-16 md:py-0"
     >
       <img
         src={pessoalEJ}
@@ -107,15 +107,14 @@ const Section2: React.FC<SectionProps> = ({ scrollYProgress }) => {
         width={1920}
         height={1080}
       />
-      {/* Aumentei um pouco a opacidade do fundo (de 70 para 80) para garantir excelente leitura do texto dos feedbacks */}
-      <div className="absolute inset-0 bg-primary/80" />
+      <div className="absolute inset-0 bg-primary/85" /> {/* Aumentei levemente para 85 para dar mais contraste no mobile */}
 
       <div className="relative z-10 max-w-6xl mx-auto px-4 w-full">
-        <div className="text-center mb-10">
+        <div className="text-center mb-10 mt-4 md:mt-0">
           <h2 className="text-4xl md:text-6xl font-bold font-heading text-primary-foreground mb-4">
             Soluções que <span className="text-accent">impactam</span>
           </h2>
-          <p className="text-xl text-primary-foreground/70 max-w-2xl mx-auto">
+          <p className="text-lg md:text-xl text-primary-foreground/70 max-w-2xl mx-auto">
             Veja o que nossos clientes dizem sobre a experiência de trabalhar conosco
           </p>
         </div>
@@ -142,17 +141,17 @@ const Section2: React.FC<SectionProps> = ({ scrollYProgress }) => {
                 </div>
 
                 {/* Texto do Depoimento */}
-                <p className="text-primary-foreground/90 italic font-body text-base leading-relaxed mb-6">
+                <p className="text-primary-foreground/90 italic font-body text-sm md:text-base leading-relaxed mb-6">
                   "{item.text}"
                 </p>
               </div>
 
               {/* Informações do Cliente */}
-              <div className="border-t border-primary-foreground/20 pt-4">
-                <h4 className="text-primary-foreground font-semibold text-lg font-heading">
+              <div className="border-t border-primary-foreground/20 pt-4 mt-auto">
+                <h4 className="text-primary-foreground font-semibold text-base md:text-lg font-heading">
                   {item.name}
                 </h4>
-                <p className="text-accent text-sm font-medium">
+                <p className="text-accent text-xs md:text-sm font-medium mt-0.5">
                   {item.role} — <span className="text-primary-foreground/60">{item.company}</span>
                 </p>
               </div>
@@ -164,6 +163,7 @@ const Section2: React.FC<SectionProps> = ({ scrollYProgress }) => {
   );
 };
 
+/* CORREÇÃO AQUI: Mudamos a altura total do container de animação de h-[200vh] para min-h-[200vh] ou deixamos flexível no mobile */
 const HeroScrollAnimation = forwardRef<HTMLDivElement>((props, ref) => {
   const container = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
@@ -172,7 +172,7 @@ const HeroScrollAnimation = forwardRef<HTMLDivElement>((props, ref) => {
   });
 
   return (
-    <div ref={container} className="h-[200vh] relative">
+    <div ref={container} className="min-h-[200vh] md:h-[200vh] relative bg-primary">
       <Section1 scrollYProgress={scrollYProgress} />
       <Section2 scrollYProgress={scrollYProgress} />
     </div>
