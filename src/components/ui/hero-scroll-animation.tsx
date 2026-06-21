@@ -16,6 +16,15 @@ interface SectionProps {
   scrollYProgress: MotionValue<number>;
 }
 
+// Interface para estruturar os dados dos feedbacks
+interface Feedback {
+  name: string;
+  role: string;
+  company: string;
+  text: string;
+  rating: number;
+}
+
 const Section1: React.FC<SectionProps> = ({ scrollYProgress }) => {
   const scale = useTransform(scrollYProgress, [0, 1], [1, 0.8]);
   const rotate = useTransform(scrollYProgress, [0, 1], [0, -5]);
@@ -61,6 +70,31 @@ const Section2: React.FC<SectionProps> = ({ scrollYProgress }) => {
   const scale = useTransform(scrollYProgress, [0, 1], [0.8, 1]);
   const rotate = useTransform(scrollYProgress, [0, 1], [5, 0]);
 
+  // Array de feedbacks fictícios para você preencher com os reais da EJ
+  const feedbacks: Feedback[] = [
+    {
+      name: "Noemia",
+      role: "Proprietária",
+      company: "Exuberante Lingerie",
+      text: "A Exuberante Lingerie foi o primeiro projeto da Integração Júnior da PUC Barreiro. É um orgulho imenso participar dos passos iniciais e acompanhar a evolução profissional que está sendo construída. O desenvolvimento apresentado até aqui evidencia o potencial da equipe e reforça a confiança em resultados cada vez mais expressivos. Um grande abraço!",
+      rating: 5,
+    },
+    {
+      name: "Rafael Campos",
+      role: "Diretor de E-commerce",
+      company: "instituição Privada",
+      text: "Trabalhar com a EJ foi uma experiência incrível. Conseguiram entender a dor do nosso negócio e modelar um sistema sob medida. Recomendo fortemente a consultoria deles!",
+      rating: 5,
+    },
+    {
+      name: "Fernanda Lima",
+      role: "Fundadora",
+      company: "Studio F",
+      text: "A parceria com a Integração Júnior da PUC Barreiro foi fundamental para o nosso posicionamento de mercado. Ficamos extremamente satisfeitos com o comprometimento e a maturidade técnica que os consultores demonstraram ao longo de todo o projeto. É nítido o preparo dessa nova geração de profissionais. Desejamos muito sucesso a toda a equipe!",
+      rating: 5,
+    },
+  ];
+
   return (
     <motion.div
       style={{ scale, rotate }}
@@ -73,29 +107,55 @@ const Section2: React.FC<SectionProps> = ({ scrollYProgress }) => {
         width={1920}
         height={1080}
       />
-      <div className="absolute inset-0 bg-primary/70" />
+      {/* Aumentei um pouco a opacidade do fundo (de 70 para 80) para garantir excelente leitura do texto dos feedbacks */}
+      <div className="absolute inset-0 bg-primary/80" />
 
-      <div className="relative z-10 max-w-6xl mx-auto px-4">
-        <div className="text-center mb-12">
+      <div className="relative z-10 max-w-6xl mx-auto px-4 w-full">
+        <div className="text-center mb-10">
           <h2 className="text-4xl md:text-6xl font-bold font-heading text-primary-foreground mb-4">
             Soluções que <span className="text-accent">impactam</span>
           </h2>
           <p className="text-xl text-primary-foreground/70 max-w-2xl mx-auto">
-            Conheça alguns dos projetos desenvolvidos pela nossa equipe
+            Veja o que nossos clientes dizem sobre a experiência de trabalhar conosco
           </p>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {[exuberante, lojaGataMineira, exuberante, lojaGataMineira].map((img, i) => (
-            <div key={i} className="rounded-xl overflow-hidden shadow-elevated hover:scale-105 transition-transform duration-300">
-              <img
-                src={img}
-                alt={`Projeto ${i + 1}`}
-                className="w-full h-40 md:h-48 object-cover"
-                loading="lazy"
-                width={800}
-                height={600}
-              />
+        {/* Grid Responsivo de Cards de Feedback */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {feedbacks.map((item, i) => (
+            <div 
+              key={i} 
+              className="bg-primary-foreground/10 backdrop-blur-md border border-primary-foreground/20 rounded-2xl p-6 flex flex-col justify-between hover:-translate-y-2 transition-all duration-300 shadow-xl"
+            >
+              <div>
+                {/* Estrelas de Avaliação */}
+                <div className="flex gap-1 mb-4 text-accent">
+                  {Array.from({ length: item.rating }).map((_, starIndex) => (
+                    <svg 
+                      key={starIndex} 
+                      className="w-5 h-5 fill-current" 
+                      viewBox="0 0 20 20"
+                    >
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                  ))}
+                </div>
+
+                {/* Texto do Depoimento */}
+                <p className="text-primary-foreground/90 italic font-body text-base leading-relaxed mb-6">
+                  "{item.text}"
+                </p>
+              </div>
+
+              {/* Informações do Cliente */}
+              <div className="border-t border-primary-foreground/20 pt-4">
+                <h4 className="text-primary-foreground font-semibold text-lg font-heading">
+                  {item.name}
+                </h4>
+                <p className="text-accent text-sm font-medium">
+                  {item.role} — <span className="text-primary-foreground/60">{item.company}</span>
+                </p>
+              </div>
             </div>
           ))}
         </div>
